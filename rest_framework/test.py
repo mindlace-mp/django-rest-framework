@@ -3,9 +3,11 @@
 # Note that we import as `DjangoRequestFactory` and `DjangoClient` in order
 # to make it harder for the user to import the wrong thing without realizing.
 from __future__ import unicode_literals
+import django
 from django.conf import settings
 from django.test.client import Client as DjangoClient
 from django.test.client import ClientHandler
+from django.test import testcases
 from rest_framework.settings import api_settings
 from rest_framework.compat import RequestFactory as DjangoRequestFactory
 from rest_framework.compat import force_bytes_or_smart_bytes, six
@@ -137,3 +139,19 @@ class APIClient(APIRequestFactory, DjangoClient):
         # Ensure that any credentials set get added to every request.
         kwargs.update(self._credentials)
         return super(APIClient, self).request(**kwargs)
+
+
+class APITransactionTestCase(testcases.TransactionTestCase):
+    client_class = APIClient
+
+
+class APITestCase(testcases.TestCase):
+    client_class = APIClient
+
+
+if django.VERSION >= (1, 4):
+    class APISimpleTestCase(testcases.SimpleTestCase):
+        client_class = APIClient
+
+    class APILiveServerTestCase(testcases.LiveServerTestCase):
+        client_class = APIClient
