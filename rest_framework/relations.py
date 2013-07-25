@@ -556,9 +556,9 @@ class HyperlinkedIdentityField(Field):
                 'Could not resolve URL for hyperlinked relationship using '
                 'view name "%s". You may have failed to include the related '
                 'model in your API, or incorrectly configured the '
-                '`lookup_field` attribute on this field.'
+                '`lookup_field` attribute (currently "%s") on this field.'
             )
-            raise Exception(msg % view_name)
+            raise Exception(msg % (view_name, self.lookup_field))
 
     def get_url(self, obj, view_name, request, format):
         """
